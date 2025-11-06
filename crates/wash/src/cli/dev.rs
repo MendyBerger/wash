@@ -19,7 +19,7 @@ use tokio::{select, sync::mpsc};
 use tracing::{debug, error, info, trace, warn};
 use wash_runtime::{
     host::{Host, HostApi},
-    plugin::{wasi_config::RuntimeConfig, wasi_http::HttpServer},
+    plugin::{wasi_config::RuntimeConfig, wasi_http::HttpServer, wasi_webgpu::WasiWebgpu},
     types::{
         Component, HostPathVolume, LocalResources, Volume, VolumeMount, VolumeType, Workload,
         WorkloadStartRequest, WorkloadState, WorkloadStopRequest,
@@ -175,6 +175,7 @@ impl CliCommand for DevCommand {
 
         // Enable runtime config
         host_builder = host_builder.with_plugin(Arc::new(RuntimeConfig::default()))?;
+        host_builder = host_builder.with_plugin(Arc::new(WasiWebgpu::new()))?;
 
         let volume_root = self
             .blobstore_root
